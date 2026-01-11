@@ -1,5 +1,13 @@
 # إدارة المزرعة-app
 تطبيق شامل لإدارة المزارع والمشروعات الزراعية
-cd /home/user/farm-management-app
-https://github.com/Farm management 
-/farm-management-app
+# farm-management-app
+تطبيق شامل لإدارة المزارع والمشروعات الزراعية.
+
+الوضع الحالي:
+- سكافولد Node/Express بسيط مضاف لعرض التطبيق محلياً.
+- الملف التنفيذي الرئيسي: `index.js`
+- لتشغيل محلياً: `npm install` ثم `npm start` (يعمل على المنفذ 3000)
+
+المستودع على GitHub: https://github.com/samymno23-cpu/farm-management-app
+
+ملاحظة: تم إنشاء نسخة مختصرة للتشغيل السريع داخل بيئة التطوير؛ أضِف ملفات المشروع الحقيقية لاحقاً.
