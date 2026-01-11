@@ -1,0 +1,14 @@
+{
+  "name": "farm-management-app",
+  "version": "0.1.0",
+  "description": "Minimal scaffold for farm-management-app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
