@@ -3,75 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة المزارع الذكية V5</title>
+    <title>Olive Farm Pro - منظومة المزارع الذكية</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #4b5d16; --accent: #d4a017; }
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; padding-bottom: 30px; }
-        .app-header { background: linear-gradient(135deg, var(--primary), #1a2408); color: white; padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .card-pro { border-radius: 20px; border: none; box-shadow: 0 6px 12px rgba(0,0,0,0.05); margin-bottom: 15px; background: white; }
-        .weather-card { background: #fff; border-left: 8px solid #3498db; padding: 15px; border-radius: 15px; margin-top: -30px; z-index: 10; position: relative; }
-        .btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .btn-tool { border-radius: 15px; padding: 15px 5px; font-size: 0.85rem; font-weight: bold; border: none; color: white; transition: 0.3s; }
-        .img-preview { width: 100%; max-height: 150px; object-fit: cover; border-radius: 10px; margin-top: 10px; display: none; }
-        .log-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; cursor: pointer; }
+        :root { --main-green: #2d5a27; --gold: #c5a059; --bg-light: #f8fdf8; }
+        body { background-color: var(--bg-light); font-family: 'Segoe UI', Tahoma, sans-serif; overflow-x: hidden; }
+        .top-bar { background: linear-gradient(135deg, var(--main-green), #1b3a18); color: white; padding: 25px 15px; border-radius: 0 0 35px 35px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .weather-widget { background: rgba(255,255,255,0.9); border-radius: 20px; padding: 12px; margin-top: -30px; border: 1px solid #e0eee0; }
+        .stat-card { background: white; border-radius: 20px; padding: 15px; border: none; box-shadow: 0 8px 15px rgba(0,0,0,0.05); text-align: center; }
+        .action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .btn-action { border: none; border-radius: 25px; padding: 20px 10px; font-weight: 600; color: white; transition: 0.3s transform; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .btn-action:active { transform: scale(0.95); }
+        .log-item { background: white; border-radius: 15px; margin-bottom: 10px; padding: 12px; border-right: 5px solid var(--main-green); }
+        .img-log { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; }
+        .bottom-nav { background: white; padding: 10px; border-top: 1px solid #eee; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; }
     </style>
 </head>
 <body>
 
-<div class="app-header text-center">
-    <h3 id="farmNameDisplay">المزرعة الذكية</h3>
-    <div class="d-flex justify-content-center gap-2 mt-2">
-        <select id="farmSelector" class="form-select form-select-sm w-50" onchange="changeFarm()"></select>
-        <button class="btn btn-light btn-sm" onclick="addFarm()">+ مزرعة</button>
+<div class="top-bar text-center">
+    <h3 id="currentFarmName" class="fw-bold mb-0">جاري التحميل...</h3>
+    <p class="small opacity-75">نظام الإدارة الزراعية المتكامل</p>
+</div>
+
+<div class="container px-4">
+    <div class="weather-widget shadow-sm d-flex justify-content-between align-items-center mb-4">
+        <div id="weatherData" class="small fw-bold text-dark">جاري تحديد الموقع والطقس...</div>
+        <i class="fas fa-cloud-sun text-warning fs-3"></i>
+    </div>
+
+    <div class="row g-3 mb-4 text-center">
+        <div class="col-6"><div class="stat-card"> <small class="text-muted">المحصول</small> <h4 id="kgTotal" class="mb-0 text-success">0</h4> <small>كجم</small> </div></div>
+        <div class="col-6"><div class="stat-card"> <small class="text-muted">المخزن</small> <h4 id="stockTotal" class="mb-0 text-primary">0</h4> <small>وحدة</small> </div></div>
+    </div>
+
+    <div class="action-grid">
+        <button class="btn-action shadow" style="background: #27ae60;" onclick="openOp('ري')"> <i class="fas fa-droplet fs-3"></i> ري </button>
+        <button class="btn-action shadow" style="background: #f39c12;" onclick="openOp('تسميد')"> <i class="fas fa-flask fs-3"></i> تسميد </button>
+        <button class="btn-action shadow" style="background: #3498db;" onclick="openOp('رش')"> <i class="fas fa-wind fs-3"></i> رش </button>
+        <button class="btn-action shadow" style="background: #e74c3c;" onclick="openOp('أعطال')"> <i class="fas fa-tools fs-3"></i> أعطال </button>
+        <button class="btn-action shadow" style="background: #2c3e50;" onclick="openOp('حصاد')"> <i class="fas fa-box-open fs-3"></i> حصاد </button>
+        <button class="btn-action shadow" style="background: #8e44ad;" onclick="openOp('عمالة')"> <i class="fas fa-users fs-3"></i> عمالة </button>
+    </div>
+
+    <div class="mt-4 mb-5 pb-5">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold mb-0">📜 السجل المصور للعمليات:</h6>
+            <button class="btn btn-sm btn-outline-dark" onclick="downloadReport()">📑 تقرير</button>
+        </div>
+        <div id="logContent"></div>
     </div>
 </div>
 
-<div class="container mt-2">
-    <div class="weather-card shadow-sm mb-3">
-        <div class="row align-items-center">
-            <div class="col-8">
-                <h6 class="mb-0 fw-bold">حالة الطقس الآن في موقعك:</h6>
-                <div id="weatherData"><small>جاري جلب بيانات الطقس...</small></div>
-            </div>
-            <div class="col-4 text-center">
-                <button class="btn btn-sm btn-outline-primary" onclick="getWeather()">🔄 تحديث</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="card-pro p-3">
-        <div class="btn-grid">
-            <button class="btn-tool" style="background: #27ae60;" onclick="openOp('ري')">💧<br>ري</button>
-            <button class="btn-tool" style="background: #f39c12;" onclick="openOp('تسميد')">🧪<br>تسميد</button>
-            <button class="btn-tool" style="background: #9b59b6;" onclick="openOp('رش')">💨<br>رش</button>
-            <button class="btn-tool" style="background: #e74c3c;" onclick="openOp('أعطال')">🛠️<br>أعطال</button>
-            <button class="btn-tool" style="background: #2c3e50;" onclick="openOp('حصاد')">📦<br>حصاد</button>
-            <button class="btn-tool" style="background: #34495e;" onclick="generateReport()">📑<br>تقرير</button>
-        </div>
-    </div>
-
-    <div class="row g-2">
-        <div class="col-6"><button class="btn btn-white card-pro w-100 p-3" onclick="openOp('تذكير')">⏰ تذكير موعد</button></div>
-        <div class="col-6"><button class="btn btn-white card-pro w-100 p-3" onclick="openOp('مخزن')">🏠 المخازن</button></div>
-    </div>
-
-    <div class="card-pro p-3">
-        <h6 class="fw-bold mb-3 border-bottom pb-2">📜 سجل العمليات المصور:</h6>
-        <div id="logContent" class="small"></div>
-    </div>
+<div class="bottom-nav">
+    <button class="btn text-success" onclick="location.reload()"><i class="fas fa-home fs-4"></i></button>
+    <button class="btn text-secondary" onclick="manageFarms()"><i class="fas fa-layer-group fs-4"></i></button>
+    <button class="btn text-secondary" onclick="openReminders()"><i class="fas fa-bell fs-4"></i></button>
+    <button class="btn text-secondary" onclick="showSettings()"><i class="fas fa-cog fs-4"></i></button>
 </div>
 
-<div class="modal fade" id="opModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius:20px;">
-            <div class="modal-header border-0"><h5 id="modalTitle"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body" id="modalBody"></div>
-            <div class="p-3 border-top">
-                <label class="form-label small fw-bold">📸 إضافة صورة للعملية:</label>
-                <input type="file" id="imgInput" class="form-control form-control-sm" accept="image/*" onchange="previewImg(this)">
-                <img id="pImg" class="img-preview">
-                <button class="btn btn-primary w-100 mt-3" onclick="saveOp()">حفظ وإضافة للسجل</button>
+<div class="modal fade" id="mainModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mx-3">
+        <div class="modal-content border-0 shadow" style="border-radius: 25px;">
+            <div class="modal-header border-0 pb-0"><h5 id="mTitle" class="fw-bold"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body" id="mBody"></div>
+            <div class="px-3 pb-3">
+                <div id="imgSection" class="mb-3">
+                    <label class="small fw-bold d-block mb-1">📸 صورة العملية (اختياري):</label>
+                    <input type="file" id="imgIn" class="form-control" accept="image/*">
+                </div>
+                <button class="btn btn-success w-100 py-3 fw-bold" onclick="saveOp()" style="border-radius:15px;">حفظ العملية الآن</button>
             </div>
         </div>
     </div>
@@ -79,90 +81,76 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    let db = JSON.parse(localStorage.getItem('farm_v5_db')) || { 
-        farms: { 'f1': { name: "مزرعة الوادي", logs: [], stock: {}, reminders: [] } } 
+    let db = JSON.parse(localStorage.getItem('farm_v6_pro')) || {
+        currentID: 'f1',
+        farms: { 'f1': { name: "مزرعة الزيتون الرئيسية", logs: [], kg: 0, stock: {} } }
     };
-    let curFarm = 'f1'; let curMode = '';
-    const modal = new bootstrap.Modal(document.getElementById('opModal'));
+    const modal = new bootstrap.Modal(document.getElementById('mainModal'));
+    let curMode = '';
 
     function getWeather() {
         navigator.geolocation.getCurrentPosition(pos => {
-            const lat = pos.coords.latitude; const lon = pos.coords.longitude;
-            // استخدام API مجاني للطقس
-            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
-            .then(r => r.json()).then(data => {
-                const w = data.current_weather;
-                document.getElementById('weatherData').innerHTML = `<span class="h4">${w.temperature}°C</span> | رياح: ${w.windspeed} كم/س`;
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&current_weather=true`)
+            .then(r => r.json()).then(d => {
+                document.getElementById('weatherData').innerHTML = `📍 موقعك: ${d.current_weather.temperature}°C | 💨 رياح ${d.current_weather.windspeed} كم`;
             });
-        });
+        }, () => document.getElementById('weatherData').innerText = "يرجى تفعيل الموقع للطقس");
     }
 
     function openOp(mode) {
-        curMode = mode; document.getElementById('modalTitle').innerText = mode;
-        const body = document.getElementById('modalBody'); body.innerHTML = '';
-        document.getElementById('pImg').style.display = 'none'; document.getElementById('imgInput').value = '';
-
-        if(mode === 'تسميد') {
-            body.innerHTML = `<select id="fType" class="form-select mb-2"><option>يوريا</option><option>نترات</option><option>بوتاسيوم</option></select>
-                             <input type="number" id="fQty" class="form-control" placeholder="الكمية">`;
-        } else if(mode === 'تذكير') {
-            body.innerHTML = `<input type="text" id="tName" class="form-control mb-2" placeholder="المهمة"><input type="date" id="tDate" class="form-control">`;
-        } else {
-            body.innerHTML = `<textarea id="tDetails" class="form-control" placeholder="تفاصيل العملية..."></textarea>`;
-        }
+        curMode = mode; document.getElementById('mTitle').innerText = mode;
+        const b = document.getElementById('mBody'); b.innerHTML = '';
+        if(mode === 'حصاد') b.innerHTML = `<input type="number" id="v1" class="form-control py-3" placeholder="الكمية المقطوفة (كجم)">`;
+        else if(mode === 'تسميد') b.innerHTML = `<select id="v1" class="form-select mb-2"><option>نترات</option><option>بوتاسيوم</option><option>يوريا</option></select><input type="number" id="v2" class="form-control" placeholder="الكمية">`;
+        else if(mode === 'عمالة') b.innerHTML = `<input type="text" id="v1" class="form-control mb-2" placeholder="اسم العامل"><select id="v2" class="form-select"><option>حضور</option><option>إجازة</option></select>`;
+        else b.innerHTML = `<textarea id="v1" class="form-control" rows="3" placeholder="اكتب تفاصيل العملية هنا..."></textarea>`;
         modal.show();
     }
 
-    function previewImg(input) {
-        const p = document.getElementById('pImg');
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = e => { p.src = e.target.result; p.style.display = 'block'; };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
     function saveOp() {
-        const farm = db.farms[curFarm];
-        const img = document.getElementById('pImg').src;
-        const log = { d: new Date().toLocaleString('ar-EG'), t: curMode, m: '', img: img.startsWith('data') ? img : null };
+        const f = db.farms[db.currentID];
+        const log = { d: new Date().toLocaleString('ar-EG'), t: curMode, m: '', img: null };
+        const file = document.getElementById('imgIn').files[0];
 
-        if(curMode === 'تسميد') log.m = `تسميد بـ ${document.getElementById('fType').value} - ${document.getElementById('fQty').value} كجم`;
-        else if(curMode === 'تذكير') farm.reminders.push({ d: document.getElementById('tDate').value, m: document.getElementById('tName').value });
-        else log.m = document.getElementById('tDetails').value;
+        if(curMode === 'حصاد') { f.kg += parseFloat(document.getElementById('v1').value); log.m = `حصاد ${document.getElementById('v1').value} كجم`; }
+        else if(curMode === 'تسميد') log.m = `استخدام ${document.getElementById('v2').value} من ${document.getElementById('v1').value}`;
+        else log.m = document.getElementById('v1').value;
 
-        if(log.m || log.img) farm.logs.push(log);
-        sync(); modal.hide();
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => { log.img = e.target.result; finishSave(f, log); };
+            reader.readAsDataURL(file);
+        } else { finishSave(f, log); }
     }
 
-    function generateReport() {
-        let r = `تقرير مزرعة: ${db.farms[curFarm].name}\n------------------\n`;
-        db.farms[curFarm].logs.forEach(l => r += `[${l.d}] ${l.t}: ${l.m}\n`);
-        const blob = new Blob([r], {type: 'text/plain'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'تقرير_المزرعة.txt'; a.click();
+    function finishSave(f, log) {
+        f.logs.push(log); localStorage.setItem('farm_v6_pro', JSON.stringify(db));
+        modal.hide(); render();
     }
-
-    function addFarm() {
-        const n = prompt("اسم المزرعة:");
-        if(n) { const id = 'f'+Date.now(); db.farms[id] = { name: n, logs: [], stock: {}, reminders: [] }; sync(); location.reload(); }
-    }
-
-    function sync() { localStorage.setItem('farm_v5_db', JSON.stringify(db)); render(); }
 
     function render() {
-        const f = db.farms[curFarm]; document.getElementById('farmNameDisplay').innerText = f.name;
+        const f = db.farms[db.currentID];
+        document.getElementById('currentFarmName').innerText = f.name;
+        document.getElementById('kgTotal').innerText = f.kg;
         document.getElementById('logContent').innerHTML = f.logs.map(l => `
-            <div class="d-flex gap-2 mb-3 border-bottom pb-2">
-                ${l.img ? `<img src="${l.img}" class="log-img" onclick="window.open(this.src)">` : '<div class="bg-light p-3">🚫</div>'}
-                <div><b>${l.t}</b><br><small>${l.m}</small><br><small class="text-muted" style="font-size:10px">${l.d}</small></div>
+            <div class="log-item d-flex align-items-center gap-3">
+                ${l.img ? `<img src="${l.img}" class="img-log" onclick="window.open(this.src)">` : '<div class="img-log bg-light text-center pt-2">🌳</div>'}
+                <div class="flex-grow-1"><div class="fw-bold small">${l.t}</div><div class="text-muted small">${l.m}</div></div>
+                <div class="text-muted" style="font-size: 9px;">${l.d.split(',')[0]}</div>
             </div>
         `).reverse().join('');
-        
-        const sel = document.getElementById('farmSelector');
-        sel.innerHTML = Object.keys(db.farms).map(id => `<option value="${id}" ${id==curFarm?'selected':''}>${db.farms[id].name}</option>`).join('');
     }
 
-    function changeFarm() { curFarm = document.getElementById('farmSelector').value; render(); }
+    function manageFarms() {
+        const n = prompt("اسم المزرعة الجديدة:");
+        if(n) { const id = 'f'+Date.now(); db.farms[id] = { name: n, logs: [], kg: 0, stock: {} }; db.currentID = id; render(); }
+    }
+
+    function downloadReport() {
+        let r = `تقرير ${db.farms[db.currentID].name}\n` + db.farms[db.currentID].logs.map(l => `${l.d}: ${l.t} - ${l.m}`).join('\n');
+        const blob = new Blob([r], {type: 'text/plain'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Report.txt'; a.click();
+    }
 
     getWeather(); render();
 </script>
