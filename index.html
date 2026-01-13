@@ -3,117 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة مزارع الزيتون الاحترافي</title>
+    <title>منظومة إدارة مزارع الزيتون</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f0f2f1; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        .header-bg { background: linear-gradient(135deg, #556b2f, #2e3b1a); color: white; padding: 20px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .card { border-radius: 15px; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        .btn-farm { background-color: #8b4513; color: white; margin: 2px; }
-        .btn-op { background-color: #556b2f; color: white; margin: 2px; border: none; }
-        .stats-val { font-weight: bold; color: #556b2f; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
+        .header-section { background: linear-gradient(135deg, #4b5d16, #2e3b1a); color: white; padding: 20px; border-radius: 0 0 25px 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .card { border-radius: 15px; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .btn-action { margin: 2px; border-radius: 8px; font-weight: 500; }
+        .stats-box { background: #fff; border-right: 5px solid #4b5d16; padding: 15px; text-align: center; }
+        .farm-title { font-weight: bold; color: #fff; text-decoration: underline; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="header-bg text-center">
-    <h3>🌳 منظومة المزارع المتكاملة</h3>
-    <select id="farmSelect" class="form-select w-50 mx-auto mt-2" onchange="updateUI()">
-        <option value="المزرعة 1">المزرعة رقم (1)</option>
-        <option value="المزرعة 2">المزرعة رقم (2)</option>
-        <option value="المزرعة 3">المزرعة رقم (3)</option>
+<div class="header-section text-center">
+    <h3 id="farmDisplayTitle" class="farm-title" onclick="renameFarm()">المزرعة رقم (1)</h3>
+    <p class="small">اضغط على الاسم لتعديله</p>
+    <select id="farmSelect" class="form-select w-75 mx-auto mt-2" onchange="switchFarm()">
+        <option value="farm1">المزرعة الأولى</option>
+        <option value="farm2">المزرعة الثانية</option>
+        <option value="farm3">المزرعة الثالثة</option>
     </select>
 </div>
 
-<div class="container mt-3">
-    <div class="row g-2 mb-3">
-        <div class="col-6"><div class="card p-2 text-center small"><span>زيتون</span><br><span id="kg" class="stats-val">0</span></div></div>
-        <div class="col-6"><div class="card p-2 text-center small"><span>زيت</span><br><span id="lt" class="stats-val">0</span></div></div>
+<div class="container mt-4">
+    <div class="row g-3 mb-4">
+        <div class="col-6"><div class="stats-box"><span>محصول (كجم)</span><h4 id="inv_kg">0</h4></div></div>
+        <div class="col-6"><div class="stats-box" style="border-right-color: #8b4513;"><span>زيت (لتر)</span><h4 id="inv_lt">0</h4></div></div>
     </div>
 
     <div class="card p-3">
-        <h6>🚜 العمليات الزراعية اليومية:</h6>
+        <h6>🚜 العمليات والصيانة (للمزرعة الحالية):</h6>
         <div class="d-flex flex-wrap">
-            <button class="btn btn-op btn-sm" onclick="log('ري','حالة الري والكمية:')">💧 ري</button>
-            <button class="btn btn-op btn-sm" onclick="log('تسميد','نوع السماد والكمية:')">🧪 تسميد</button>
-            <button class="btn btn-op btn-sm" onclick="log('رش','نوع المبيد والغرض:')">💨 رش</button>
-            <button class="btn btn-op btn-sm" onclick="add('kg','الكمية بالكجم:','حصاد')">📦 حصاد</button>
+            <button class="btn btn-success btn-action" onclick="addLog('ري', 'كمية الري/الوقت:')">💧 ري</button>
+            <button class="btn btn-success btn-action" onclick="addLog('تسميد', 'نوع السماد والكمية:')">🧪 تسميد</button>
+            <button class="btn btn-success btn-action" onclick="addLog('رش', 'نوع المبيد:')">💨 رش</button>
+            <button class="btn btn-danger btn-action" onclick="addLog('صيانة', 'وصف العطل والإصلاح:')">🛠️ أعطال وصيانة</button>
+            <button class="btn btn-dark btn-action" onclick="addInv('inv_kg', 'كمية الحصاد بالكجم:')">📦 حصاد</button>
         </div>
     </div>
 
     <div class="card p-3">
-        <h6>👥 إدارة العمالة والغياب:</h6>
-        <div class="d-flex flex-wrap">
-            <button class="btn btn-primary btn-sm m-1" onclick="log('حضور','اسم العامل:')">✅ حضور</button>
-            <button class="btn btn-danger btn-sm m-1" onclick="log('غياب','اسم الغائب:')">❌ غياب</button>
-            <button class="btn btn-info btn-sm m-1 text-white" onclick="log('إجازة','اسم صاحب الإجازة:')">🏖️ إجازة</button>
-            <button class="btn btn-secondary btn-sm m-1" onclick="showMonthlyReport()">📅 تقرير شهري</button>
+        <h6>👥 شؤون العمالة (لهذه المزرعة):</h6>
+        <div class="d-flex flex-wrap mb-3">
+            <button class="btn btn-primary btn-action" onclick="staffLog('حضور')">✅ تسجيل حضور</button>
+            <button class="btn btn-outline-danger btn-action" onclick="staffLog('غياب')">❌ تسجيل غياب</button>
+            <button class="btn btn-info btn-action text-white" onclick="staffLog('إجازة')">🏖️ تسجيل إجازة</button>
         </div>
-    </div>
-
-    <div class="card p-3">
-        <h6>📜 سجل النشاط (المزرعة المختارة):</h6>
         <div class="table-responsive">
-            <table class="table table-sm small">
-                <thead><tr><th>التاريخ</th><th>النوع</th><th>التفاصيل</th></tr></thead>
-                <tbody id="logs"></tbody>
+            <table class="table table-sm table-bordered text-center small">
+                <thead class="table-light">
+                    <tr><th>العامل</th><th>حضور</th><th>غياب</th><th>إجازة</th></tr>
+                </thead>
+                <tbody id="staffTable"></tbody>
             </table>
         </div>
+    </div>
+
+    <div class="card p-3">
+        <h6>📜 سجل النشاطات الكامل:</h6>
+        <div id="generalLogs" class="small text-muted" style="max-height: 200px; overflow-y: auto;"></div>
     </div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('olive_pro_db')) || {};
+    let db = JSON.parse(localStorage.getItem('farm_system_v2')) || {
+        farm1: { name: "المزرعة الأولى", logs: [], staff: {}, inv_kg: 0, inv_lt: 0 },
+        farm2: { name: "المزرعة الثانية", logs: [], staff: {}, inv_kg: 0, inv_lt: 0 },
+        farm3: { name: "المزرعة الثالثة", logs: [], staff: {}, inv_kg: 0, inv_lt: 0 }
+    };
+
+    function switchFarm() {
+        let id = document.getElementById('farmSelect').value;
+        document.getElementById('farmDisplayTitle').innerText = db[id].name;
+        updateUI();
+    }
+
+    function renameFarm() {
+        let id = document.getElementById('farmSelect').value;
+        let newName = prompt("أدخل الاسم الجديد للمزرعة:", db[id].name);
+        if (newName) {
+            db[id].name = newName;
+            document.getElementById('farmDisplayTitle').innerText = newName;
+            document.querySelector(`#farmSelect option[value="${id}"]`).innerText = newName;
+            save();
+        }
+    }
+
+    function addLog(type, promptMsg) {
+        let id = document.getElementById('farmSelect').value;
+        let val = prompt(promptMsg);
+        if (val) {
+            db[id].logs.push({ d: new Date().toLocaleString('ar-EG'), t: type, m: val });
+            save();
+        }
+    }
+
+    function addInv(key, promptMsg) {
+        let id = document.getElementById('farmSelect').value;
+        let val = prompt(promptMsg);
+        if (val && !isNaN(val)) {
+            db[id][key] += parseFloat(val);
+            db[id].logs.push({ d: new Date().toLocaleString('ar-EG'), t: "مخزون", m: "إضافة " + val });
+            save();
+        }
+    }
+
+    function staffLog(status) {
+        let id = document.getElementById('farmSelect').value;
+        let name = prompt("اسم العامل:");
+        if (name) {
+            if (!db[id].staff[name]) db[id].staff[name] = { حضور: 0, غياب: 0, إجازة: 0 };
+            db[id].staff[name][status]++;
+            db[id].logs.push({ d: new Date().toLocaleDateString('ar-EG'), t: "عمالة", m: `${status}: ${name}` });
+            save();
+        }
+    }
 
     function updateUI() {
-        let farm = document.getElementById('farmSelect').value;
-        if(!db[farm]) db[farm] = {l:[], kg:0, lt:0};
+        let id = document.getElementById('farmSelect').value;
+        let f = db[id];
+        document.getElementById('inv_kg').innerText = f.inv_kg;
+        document.getElementById('inv_lt').innerText = f.inv_lt;
         
-        document.getElementById('kg').innerText = db[farm].kg + " كجم";
-        document.getElementById('lt').innerText = db[farm].lt + " لتر";
-        
-        document.getElementById('logs').innerHTML = db[farm].l.map(x => `
-            <tr><td>${x.d}</td><td><b>${x.t}</b></td><td>${x.m}</td></tr>
-        `).reverse().slice(0, 10).join(''); // عرض آخر 10 عمليات فقط
-        
-        localStorage.setItem('olive_pro_db', JSON.stringify(db));
-    }
-
-    function log(type, msg) {
-        let val = prompt(msg);
-        let farm = document.getElementById('farmSelect').value;
-        if(val) {
-            db[farm].l.push({ d: new Date().toLocaleDateString('ar-EG'), t: type, m: val });
-            updateUI();
+        // تحديث جدول العمالة
+        let sTable = '';
+        for (let name in f.staff) {
+            sTable += `<tr><td>${name}</td><td>${f.staff[name].حضور}</td><td>${f.staff[name].غياب}</td><td>${f.staff[name].إجازة}</td></tr>`;
         }
+        document.getElementById('staffTable').innerHTML = sTable;
+
+        // تحديث السجل
+        document.getElementById('generalLogs').innerHTML = f.logs.map(l => `<div>[${l.d}] <b>${l.t}:</b> ${l.m}</div>`).reverse().join('');
     }
 
-    function add(key, msg, type) {
-        let val = prompt(msg);
-        let farm = document.getElementById('farmSelect').value;
-        if(val && !isNaN(val)) {
-            db[farm][key] += parseFloat(val);
-            db[farm].l.push({ d: new Date().toLocaleDateString('ar-EG'), t: type, m: "إضافة " + val });
-            updateUI();
-        }
+    function save() {
+        localStorage.setItem('farm_system_v2', JSON.stringify(db));
+        updateUI();
     }
 
-    function showMonthlyReport() {
-        let farm = document.getElementById('farmSelect').value;
-        let report = db[farm].l.reduce((acc, curr) => {
-            if(['حضور','غياب','إجازة'].includes(curr.t)) {
-                let key = curr.m + " (" + curr.t + ")";
-                acc[key] = (acc[key] || 0) + 1;
-            }
-            return acc;
-        }, {});
-        
-        let msg = "التقرير الشهري للعمالة:\n";
-        for (let k in report) msg += `${k}: ${report[k]} أيام\n`;
-        alert(Object.keys(report).length ? msg : "لا توجد سجلات عمالة لهذا الشهر.");
-    }
-
-    updateUI();
+    // تهيئة الأسماء في القائمة عند البدء
+    document.querySelectorAll('#farmSelect option').forEach(opt => {
+        opt.innerText = db[opt.value].name;
+    });
+    switchFarm();
 </script>
 </body>
 </html>
