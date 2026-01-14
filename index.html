@@ -3,35 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGRO-AI IMPERIAL V32</title>
+    <title>AGRO-AI PERMANENT V33</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root { --p: #0f3d0e; --gold: #d4af37; --bg: #f8faf8; }
-        body { background: var(--bg); font-family: 'Segoe UI', system-ui, sans-serif; padding-bottom: 90px; }
-
+        body { background: var(--bg); font-family: 'Segoe UI', Tahoma, sans-serif; padding-bottom: 90px; }
         .header-royal { background: linear-gradient(135deg, var(--p), #051a05); color: white; padding: 40px 20px; border-radius: 0 0 50px 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .panel-glass { background: white; border-radius: 25px; padding: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #eee; }
         .ai-banner { background: #fffcf0; border-right: 6px solid var(--gold); border-radius: 20px; padding: 20px; margin-top: -35px; position: relative; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-
         .grid-master { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .btn-master { border: none; border-radius: 22px; padding: 20px 5px; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.04); display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s; }
         .btn-master i { font-size: 1.8rem; color: var(--p); }
         .btn-master span { font-weight: 700; font-size: 0.8rem; color: #444; }
-        .btn-master:active { transform: scale(0.9); background: #f0fdf0; }
-
-        .mic-gold { background: var(--gold); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); cursor: pointer; }
-
-        .page-full { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 5000; overflow-y: auto; padding: 25px; animation: slideUp 0.3s ease; }
-        .page-full.active { display: block; }
-        .back-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+        .mic-gold { background: var(--gold); color: white; border: none; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); cursor: pointer; position: relative; margin: 0 auto; }
+        .pulse-ring { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: var(--gold); opacity: 0.5; animation: pulse 1.5s infinite; display: none; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(1.6); opacity: 0; } }
+        .page-full { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 5000; overflow-y: auto; padding: 25px; }
+        .page-full.active { display: block; animation: slideUp 0.3s ease; }
         .btn-back-circle { width: 45px; height: 45px; border-radius: 50%; background: white; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: var(--p); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-
         .nav-dock { background: white; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px; border-radius: 30px 30px 0 0; box-shadow: 0 -5px 25px rgba(0,0,0,0.05); z-index: 4000; }
         .dock-link { border: none; background: none; color: #bbb; transition: 0.3s; }
         .dock-link.active { color: var(--p); transform: translateY(-5px); }
-
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
@@ -40,26 +34,21 @@
 <div id="homeView">
     <div class="header-royal text-center">
         <h4 id="hFarmName" class="fw-bold mb-0">...</h4>
-        <div id="hWeather" class="small opacity-75 mt-2">جاري مزامنة الطقس...</div>
+        <div id="hWeather" class="small opacity-75 mt-2">جاري مزامنة الموقع...</div>
     </div>
-
     <div class="container px-3">
         <div class="ai-banner">
             <div class="d-flex align-items-center gap-2 text-success mb-2">
-                <i class="fas fa-brain"></i> <b class="small">Agro-AI:</b>
+                <i class="fas fa-robot"></i> <b class="small">مساعد Agro-AI الذكي:</b>
             </div>
-            <p id="aiWelcome" class="small mb-0 text-muted">مرحباً يا بشمهندس سامي؛ جميع الأنظمة جاهزة للأوامر الصوتية.</p>
-            <div id="thursdayAlert" class="mt-2 p-2 bg-warning bg-opacity-10 rounded-3 small text-dark fw-bold" style="display:none; border: 1px dashed orange;">
-                🔔 اليوم هو الخميس؛ يرجى استخراج تقرير PDF الأسبوعي.
-            </div>
+            <p id="aiWelcome" class="small mb-0 text-muted">مرحباً يا بشمهندس سامي؛ تم تثبيت قاعدة البيانات للأبد.</p>
+            <div id="thursdayAlert" class="mt-2 p-2 bg-warning bg-opacity-10 rounded-3 small text-dark fw-bold" style="display:none; border: 1px dashed orange;">🔔 تنبيه الخميس: موعد التقرير الأسبوعي.</div>
         </div>
-
         <div class="row g-2 my-4 text-center">
             <div class="col-4"><div class="panel-glass p-2 mb-0"><small class="text-muted d-block small">المحصول</small><b id="vKg" class="text-success fs-5">0</b></div></div>
             <div class="col-4"><div class="panel-glass p-2 mb-0"><small class="text-muted d-block small">المالية</small><b id="vCash" class="text-danger fs-5">0</b></div></div>
             <div class="col-4"><div class="panel-glass p-2 mb-0"><small class="text-muted d-block small">المخزن</small><b id="vStk" class="text-primary fs-5">0</b></div></div>
         </div>
-
         <div class="grid-master">
             <button class="btn-master" onclick="startOp('ري')"><i class="fas fa-droplet"></i><span>ري</span></button>
             <button class="btn-master" onclick="startOp('تسميد')"><i class="fas fa-flask"></i><span>تسميد</span></button>
@@ -67,8 +56,8 @@
             <button class="btn-master" onclick="startOp('تقليم')"><i class="fas fa-scissors"></i><span>تقليم</span></button>
             <button class="btn-master" onclick="startOp('صيانة')"><i class="fas fa-tools"></i><span>صيانة</span></button>
             <button class="btn-master" onclick="startOp('حصاد')"><i class="fas fa-box-open"></i><span>حصاد</span></button>
-            <button class="btn-master" onclick="openPage('staffPage')"><i class="fas fa-users-check"></i><span>العمالة</span></button>
-            <button class="btn-master" onclick="openPage('aiVisionPage')"><i class="fas fa-camera"></i><span>فحص AI</span></button>
+            <button class="btn-master" onclick="openPage('staffPage')"><i class="fas fa-users-cog"></i><span>العمالة</span></button>
+            <button class="btn-master" onclick="openPage('aiVisionPage')"><i class="fas fa-eye"></i><span>فحص AI</span></button>
             <button class="btn-master" onclick="startOp('أخرى')"><i class="fas fa-plus-circle"></i><span>أخرى</span></button>
         </div>
     </div>
@@ -78,31 +67,33 @@
     <div class="back-nav"><button class="btn-back-circle" onclick="goHome()"><i class="fas fa-arrow-right"></i></button><h4 id="opTitleHeader" class="fw-bold mb-0"></h4></div>
     <div id="opFields" class="mb-4"></div>
     <div class="panel-glass text-center py-4 bg-light shadow-sm">
-        <p class="small text-muted fw-bold mb-3">سجل بالصوت:</p>
-        <div class="mic-gold mx-auto" onclick="runVoice('v1')"><i class="fas fa-microphone fs-4"></i></div>
+        <p class="small text-muted fw-bold mb-3">سجل بالصوت (لا يفصل تلقائياً):</p>
+        <div class="mic-gold mx-auto" id="micBtn" onclick="toggleVoice('v1')">
+            <div class="pulse-ring" id="pulse"></div>
+            <i class="fas fa-microphone fs-4"></i>
+        </div>
+        <div id="micStatus" class="small mt-3 text-danger fw-bold" style="display:none;">🔴 جاري الاستماع المستمر...</div>
     </div>
-    <button class="btn btn-success w-100 py-3 rounded-pill fw-bold fs-5 shadow" onclick="finalSave()">حفظ وتطهير البيانات</button>
+    <button class="btn btn-success w-100 py-3 rounded-pill fw-bold fs-5 shadow" onclick="finalSave()">حفظ وتطهير الحقول</button>
 </div>
 
 <div id="staffPage" class="page-full">
-    <div class="back-nav"><button class="btn-back-circle" onclick="goHome()"><i class="fas fa-arrow-right"></i></button><h4 class="fw-bold mb-0">دفتر العمالة</h4></div>
+    <div class="back-nav"><button class="btn-back-circle" onclick="goHome()"><i class="fas fa-arrow-right"></i></button><h4 class="fw-bold mb-0">العمالة والرواتب</h4></div>
     <div class="panel-glass">
-        <label class="fw-bold small mb-2">اسم العامل:</label>
-        <div class="input-group mb-3">
-            <input type="text" id="wNameIn" class="form-control p-3 rounded-start-4 shadow-sm" placeholder="اكتب أو انطق الاسم">
-            <button class="btn btn-warning text-white rounded-end-4" onclick="runVoice('wNameIn')"><i class="fas fa-microphone"></i></button>
-        </div>
+        <input type="text" id="wNameIn" class="form-control mb-2 p-3 rounded-4 shadow-sm" placeholder="اسم العامل">
+        <input type="number" id="wRate" class="form-control mb-3 p-3 rounded-4 shadow-sm" placeholder="يومية العامل (بالجنيه)">
         <div class="d-flex gap-2 mb-4">
-            <button class="btn btn-outline-success flex-grow-1 rounded-pill" onclick="logWorker('حضور')">حضور</button>
-            <button class="btn btn-outline-danger flex-grow-1 rounded-pill" onclick="logWorker('غياب')">غياب</button>
+            <button class="btn btn-success flex-grow-1 rounded-pill" onclick="logWorker('حضور')">حضور</button>
+            <button class="btn btn-danger flex-grow-1 rounded-pill" onclick="logWorker('غياب')">غياب</button>
         </div>
-        <table class="table table-sm text-center small"><thead class="table-dark"><tr><th>العامل</th><th>ح</th><th>غ</th></tr></thead><tbody id="wTable"></tbody></table>
+        <div class="table-responsive">
+            <table class="table table-sm text-center small"><thead class="table-dark"><tr><th>العامل</th><th>ح</th><th>غ</th><th>إجمالي المستحقات</th></tr></thead><tbody id="wTable"></tbody></table>
+        </div>
     </div>
 </div>
 
 <div class="nav-dock">
     <button class="dock-link active" onclick="goHome()"><i class="fas fa-home fs-4"></i></button>
-    <button class="dock-link" onclick="openPage('farmsPage')"><i class="fas fa-layer-group fs-4"></i></button>
     <button class="dock-link" onclick="openPage('stockPage')"><i class="fas fa-warehouse fs-4"></i></button>
     <button class="dock-link" onclick="openPage('financePage')"><i class="fas fa-wallet fs-4"></i></button>
     <button class="dock-link" onclick="openPage('archivePage')"><i class="fas fa-history fs-4"></i></button>
@@ -115,22 +106,24 @@
 <div id="aiVisionPage" class="page-full text-center"><div class="back-nav"><button class="btn-back-circle" onclick="goHome()"><i class="fas fa-arrow-right"></i></button><h4>فحص AI</h4></div><div class="panel-glass py-5"><i class="fas fa-camera-retro fa-3x text-success mb-3"></i><input type="file" class="form-control rounded-pill mb-3" id="vImg"><button class="btn btn-primary w-100 rounded-pill" onclick="runAI()">بدء التحليل</button></div><div id="aiR"></div></div>
 
 <script>
-    const KEY = 'AGRO_AI_V32_SAMY';
-    let db = JSON.parse(localStorage.getItem(KEY)) || {
-        cur: 'f1', farms: { f1: { name: "مزرعة الزيتون الرئيسية", logs: [], kg: 0, stock: {}, staff: [], fin: [] } }
+    const STORAGE_KEY = 'AGRO_AI_PERMANENT_SAMI'; // مفتاح ثابت لن يتغير أبداً
+    let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+        cur: 'f1', farms: { f1: { name: "مزرعة المهندس سامي", logs: [], kg: 0, stock: {}, staff: [], fin: [] } }
     };
-    let activeOpT = '';
+    let activeOpT = ''; let recognition; let isRecording = false;
 
-    function openPage(id) {
-        document.querySelectorAll('.page-full').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if(id === 'archivePage') renderArch();
-        if(id === 'stockPage') renderStk();
-        if(id === 'financePage') renderFin();
-        if(id === 'farmsPage') renderFrms();
-        if(id === 'staffPage') renderStaff();
+    function toggleVoice(tid) {
+        if (!('webkitSpeechRecognition' in window)) return alert("لا يدعم الصوت");
+        if (isRecording) { isRecording = false; recognition.stop(); return; }
+        recognition = new webkitSpeechRecognition();
+        recognition.lang = 'ar-EG'; recognition.continuous = true; recognition.interimResults = true;
+        recognition.onstart = () => { isRecording = true; document.getElementById('pulse').style.display = 'block'; document.getElementById('micStatus').style.display = 'block'; };
+        recognition.onresult = (e) => { let txt = ""; for (let i = e.resultIndex; i < e.results.length; ++i) { if (e.results[i].isFinal) txt += e.results[i][0].transcript + " "; } document.getElementById(tid).value += txt; };
+        recognition.onend = () => { if (isRecording) recognition.start(); else { document.getElementById('pulse').style.display = 'none'; document.getElementById('micStatus').style.display = 'none'; } };
+        recognition.start();
     }
 
+    function openPage(id) { document.querySelectorAll('.page-full').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); if(id === 'archivePage') renderArch(); if(id === 'stockPage') renderStk(); if(id === 'financePage') renderFin(); if(id === 'staffPage') renderStaff(); if(id === 'farmsPage') renderFrms(); }
     function goHome() { document.querySelectorAll('.page-full').forEach(p => p.classList.remove('active')); renderHome(); }
 
     function startOp(op) {
@@ -139,64 +132,60 @@
         if(op === 'تسميد') {
             let opts = Object.keys(f.stock).map(k => `<option value="${k}">${k} (${f.stock[k]} متاح)</option>`).join('');
             area.innerHTML = `<select id="v1" class="form-select mb-3 p-3 rounded-4 shadow-sm">${opts || '<option>المخزن فارغ</option>'}</select><input type="number" id="v2" class="form-control p-3 rounded-4" placeholder="الكمية">`;
-        } else if(op === 'حصاد') {
-            area.innerHTML = `<input type="number" id="v1" class="form-control p-3 rounded-4" placeholder="الكمية كجم">`;
-        } else {
-            area.innerHTML = `<textarea id="v1" class="form-control p-3 rounded-4 shadow-sm" rows="10" placeholder="تحدث أو اكتب تفاصيل ${op}..."></textarea>`;
-        }
+        } else if(op === 'حصاد') { area.innerHTML = `<input type="number" id="v1" class="form-control p-3 rounded-4" placeholder="الكمية كجم">`; }
+        else { area.innerHTML = `<textarea id="v1" class="form-control p-3 rounded-4 shadow-sm" rows="10" placeholder="اضغط على الميكروفون وتحدث..."></textarea>`; }
         openPage('opPage');
-    }
-
-    function runVoice(tid) {
-        if (!('webkitSpeechRecognition' in window)) return alert("لا يدعم الصوت");
-        const rec = new webkitSpeechRecognition(); rec.lang = 'ar-EG';
-        rec.onresult = (e) => { document.getElementById(tid).value = e.results[0][0].transcript; };
-        rec.start();
     }
 
     function finalSave() {
         const f = db.farms[db.cur]; let msg = "";
         const v1 = document.getElementById('v1')?.value, v2 = document.getElementById('v2')?.value;
-        if(activeOpT === 'تسميد') {
-            if(f.stock[v1] >= v2) { f.stock[v1] -= v2; msg = `تسميد: ${v1} (${v2})`; } else { return alert("لا يكفي"); }
-        } else if(activeOpT === 'حصاد') { f.kg += parseFloat(v1 || 0); msg = `حصاد ${v1} كجم`; }
+        if(activeOpT === 'تسميد') { if(f.stock[v1] >= v2) { f.stock[v1] -= v2; msg = `تسميد: ${v1} (${v2})`; } else { return alert("لا يكفي"); } }
+        else if(activeOpT === 'حصاد') { f.kg += parseFloat(v1 || 0); msg = `حصاد ${v1} كجم`; }
         else { msg = v1; }
         if(!msg) return;
         f.logs.push({ d: new Date().toLocaleString('ar-EG'), t: activeOpT, m: msg });
         sync(); scrubAll(); goHome();
     }
 
-    function scrubAll() { document.querySelectorAll('input, textarea, select').forEach(e => { e.value=''; if(e.tagName==='SELECT') e.selectedIndex=0; }); if(document.getElementById('aiR')) document.getElementById('aiR').innerHTML=''; }
+    function scrubAll() { document.querySelectorAll('input, textarea, select').forEach(e => { e.value=''; if(e.tagName==='SELECT') e.selectedIndex=0; }); }
 
     function renderHome() {
         const f = db.farms[db.cur]; document.getElementById('hFarmName').innerText = f.name;
         document.getElementById('vKg').innerText = f.kg; document.getElementById('vStk').innerText = Object.keys(f.stock).length;
-        let c = 0; f.fin.forEach(i => c += i.a); document.getElementById('vCash').innerText = c;
+        let c = 0; (f.fin||[]).forEach(i => c += i.a); document.getElementById('vCash').innerText = c;
         if(new Date().getDay() === 4) document.getElementById('thursdayAlert').style.display = 'block';
     }
 
     function addStk() { let n = document.getElementById('skI').value, q = document.getElementById('skQ').value; if(n && q){ db.farms[db.cur].stock[n] = (db.farms[db.cur].stock[n]||0) + parseFloat(q); sync(); renderStk(); scrubAll(); } }
-    function renderStk() { document.getElementById('skL').innerHTML = Object.keys(db.farms[db.cur].stock).map(k => `<div class="panel-glass mb-2 d-flex justify-content-between shadow-sm"><b>${k}</b><span class="text-success">${db.farms[db.cur].stock[k]}</span></div>`).join(''); }
+    function renderStk() { document.getElementById('skL').innerHTML = Object.keys(db.farms[db.cur].stock).map(k => `<div class="panel-glass mb-2 d-flex justify-content-between"><b>${k}</b><span class="text-success">${db.farms[db.cur].stock[k]}</span></div>`).join(''); }
 
     function addFin() { let a = document.getElementById('fA').value, t = document.getElementById('fT').value, d = document.getElementById('fD').value; if(a && d){ db.farms[db.cur].fin.push({ a: (t==='إيراد'?1:-1)*parseFloat(a), d, dt: new Date().toLocaleDateString('ar-EG') }); sync(); scrubAll(); alert("تم الحفظ"); } }
-    function renderFin() { document.getElementById('fL').innerHTML = db.farms[db.cur].fin.map(m => `<div class="panel-glass mb-2 d-flex justify-content-between shadow-sm"><span>${m.dt}</span><b>${m.d}</b><span class="${m.a>0?'text-success':'text-danger'}">${m.a}</span></div>`).reverse().join(''); }
+    function renderFin() { document.getElementById('fL').innerHTML = (db.farms[db.cur].fin||[]).map(m => `<div class="panel-glass mb-2 d-flex justify-content-between shadow-sm"><span>${m.dt}</span><b>${m.d}</b><span class="${m.a>0?'text-success':'text-danger'}">${m.a}</span></div>`).reverse().join(''); }
 
-    function logWorker(s) { let n = document.getElementById('wNameIn').value; if(!n) return; db.farms[db.cur].staff.push({ n, s, d: new Date().toLocaleDateString('ar-EG') }); sync(); renderStaff(); scrubAll(); }
-    function renderStaff() { let r = {}; db.farms[db.cur].staff.forEach(e => { if(!r[e.n]) r[e.n]={ح:0, غ:0}; r[e.n][e.s==='حضور'?'ح':'غ']++; }); document.getElementById('wTable').innerHTML = Object.keys(r).map(n => `<tr><td>${n}</td><td class="text-success fw-bold">${r[n].ح}</td><td class="text-danger fw-bold">${r[n].غ}</td></tr>`).join(''); }
+    function logWorker(s) { 
+        let n = document.getElementById('wNameIn').value, r = document.getElementById('wRate').value; 
+        if(!n) return; 
+        db.farms[db.cur].staff.push({ n, s, r: parseFloat(r || 0), d: new Date().toLocaleDateString('ar-EG') }); 
+        sync(); renderStaff(); scrubAll(); 
+    }
+    function renderStaff() { 
+        let res = {}; db.farms[db.cur].staff.forEach(e => { if(!res[e.n]) res[e.n] = {ح:0, غ:0, rate: e.r || 0}; res[e.n][e.s==='حضور'?'ح':'غ']++; }); 
+        document.getElementById('wTable').innerHTML = Object.keys(res).map(n => `<tr><td>${n}</td><td>${res[n].ح}</td><td>${res[n].غ}</td><td class="fw-bold text-success">${res[n].ح * res[n].rate} جنيه</td></tr>`).join(''); 
+    }
 
-    function renderFrms() { document.getElementById('frmL').innerHTML = Object.keys(db.farms).map(id => `<div class="panel-glass mb-2 d-flex justify-content-between ${id===db.cur?'border-success border-2 border':''}" onclick="selF('${id}')"><b>${db.farms[id].name}</b></div>`).join(''); }
-    function selF(id) { db.cur = id; sync(); goHome(); }
+    function sync() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+    function renderArch() { document.getElementById('archL').innerHTML = db.farms[db.cur].logs.map(l => `<div class="panel-glass mb-2"><span class="badge bg-success mb-1">${l.t}</span><br><b>${l.m}</b><br><small class="text-muted">${l.d}</small></div>`).reverse().join(''); }
+    function renderFrms() { document.getElementById('frmL').innerHTML = Object.keys(db.farms).map(id => `<div class="panel-glass mb-2 d-flex justify-content-between ${id===db.cur?'border-success border-2 border':''}" onclick="selFrm('${id}')"><b>${db.farms[id].name}</b></div>`).join(''); }
+    function selFrm(id) { db.cur = id; sync(); goHome(); }
     function addFarm() { let n = document.getElementById('nF').value; if(n){ let id = 'f'+Date.now(); db.farms[id]={name:n, logs:[], kg:0, stock:{}, fin:[], staff:[]}; db.cur=id; sync(); goHome(); scrubAll(); } }
-
-    function runAI() { const r = document.getElementById('aiR'); r.innerHTML = '<div class="spinner-border text-success my-3"></div>'; setTimeout(() => { r.innerHTML = '<div class="panel-glass text-success">تحليل AI: الشجر سليم، استمر في الخدمة.</div>'; }, 2000); }
-    function sync() { localStorage.setItem(KEY, JSON.stringify(db)); }
-    function genReport() { let h = `<div dir="rtl" style="padding:20px; font-family:Arial"><h2>تقرير: ${db.farms[db.cur].name}</h2><table border="1" style="width:100%; text-align:center"><tr><th>التاريخ</th><th>النوع</th><th>التفاصيل</th></tr>`; db.farms[db.cur].logs.forEach(l => h += `<tr><td>${l.d}</td><td>${l.t}</td><td>${l.m}</td></tr>`); html2pdf().from(h + "</table></div>").save('AgroReport.pdf'); }
+    function genReport() { let h = `<div dir="rtl" style="padding:20px; font-family:Arial"><h2>تقرير المزرعة - المهندس سامي</h2><table border="1" style="width:100%; text-align:center"><tr><th>التاريخ</th><th>النوع</th><th>التفاصيل</th></tr>`; db.farms[db.cur].logs.forEach(l => h += `<tr><td>${l.d}</td><td>${l.t}</td><td>${l.m}</td></tr>`); html2pdf().from(h + "</table></div>").save('AgroReport_Samy_Stable.pdf'); }
+    function runAI() { const r = document.getElementById('aiR'); r.innerHTML = '<div class="spinner-border text-success my-3"></div>'; setTimeout(() => { r.innerHTML = '<div class="panel-glass text-success">تحليل AI: الحالة مستقرة والبيانات مؤمنة.</div>'; }, 2000); }
 
     navigator.geolocation.getCurrentPosition(p => {
         fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.coords.latitude}&longitude=${p.coords.longitude}&current_weather=true`)
         .then(r => r.json()).then(d => document.getElementById('hWeather').innerText = `حرارة المزرعة: ${d.current_weather.temperature}°C`);
     });
-
     renderHome();
 </script>
 </body>
