@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olive Farm Pro V9</title>
+    <title>Olive Farm Pro V10 - الذكاء المخزني</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -12,25 +12,28 @@
             background: url('https://images.unsplash.com/photo-1500382017468-9049fee74a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed; 
             background-size: cover; font-family: 'Segoe UI', sans-serif; padding-bottom: 80px;
         }
-        .overlay { background: rgba(248, 253, 248, 0.9); min-height: 100vh; }
-        .top-bar { background: linear-gradient(135deg, var(--main), #1b3a18); color: white; padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .btn-action { border: none; border-radius: 20px; padding: 20px 5px; color: white; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .overlay { background: rgba(248, 253, 248, 0.92); min-height: 100vh; }
+        .top-bar { background: linear-gradient(135deg, var(--main), #1b3a18); color: white; padding: 20px; border-radius: 0 0 30px 30px; position: relative; }
+        .btn-action { border: none; border-radius: 20px; padding: 18px 5px; color: white; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
         .bottom-nav { background: white; padding: 12px; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; border-top: 1px solid #ddd; z-index: 1000; }
-        .card-custom { background: white; border-radius: 20px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px; padding: 15px; }
-        .log-img { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; }
+        .card-custom { background: white; border-radius: 20px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 12px; padding: 12px; }
+        .stock-tag { background: #e8f5e9; color: var(--main); padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; }
     </style>
 </head>
 <body>
 <div class="overlay">
     <div class="top-bar text-center">
-        <h4 id="farmTitle" class="fw-bold mb-0">مزرعة الزيتون</h4>
-        <small id="weatherText"><i class="fas fa-sun"></i> جاري جلب الطقس...</small>
+        <div class="d-flex justify-content-center align-items-center gap-2">
+            <h4 id="farmTitle" class="fw-bold mb-0">مزرعة الزيتون</h4>
+            <button class="btn btn-sm btn-light rounded-circle" onclick="openMap()" title="موقع المزرعة">📍</button>
+        </div>
+        <small id="weatherText"><i class="fas fa-sun"></i> جاري جلب الطقس والموقع...</small>
     </div>
 
     <div class="container mt-4 px-3">
         <div class="row g-2 mb-4 text-center">
-            <div class="col-6"><div class="card-custom"> <small class="text-muted">المحصول</small> <h4 id="viewKg" class="mb-0 text-success">0</h4> </div></div>
-            <div class="col-6"><div class="card-custom"> <small class="text-muted">المخزن</small> <h4 id="viewStock" class="mb-0 text-primary">0</h4> </div></div>
+            <div class="col-6"><div class="card-custom border-bottom border-success border-4"> <small class="text-muted">إجمالي المحصول</small> <h4 id="viewKg" class="mb-0 text-success fw-bold">0</h4> <small>كجم</small> </div></div>
+            <div class="col-6"><div class="card-custom border-bottom border-primary border-4"> <small class="text-muted">أصناف المخزن</small> <h4 id="viewStockCount" class="mb-0 text-primary fw-bold">0</h4> <small>صنف</small> </div></div>
         </div>
 
         <div class="row g-3">
@@ -42,8 +45,8 @@
             <div class="col-4"><button class="btn-action w-100" style="background:#8e44ad" onclick="openInput('عمالة')"><i class="fas fa-users fs-4"></i> عمالة</button></div>
         </div>
 
-        <div class="mt-4">
-            <h6 class="fw-bold mb-3">📜 سجل النشاط:</h6>
+        <div class="mt-4 pb-5">
+            <h6 class="fw-bold mb-3">📜 آخر العمليات:</h6>
             <div id="logList"></div>
         </div>
     </div>
@@ -51,112 +54,156 @@
 
 <div class="modal fade" id="mainModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered mx-3">
-        <div class="modal-content shadow-lg">
-            <div class="modal-header"><h5 id="mLabel" class="fw-bold"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header border-0 pb-0"><h5 id="mLabel" class="fw-bold"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body" id="mBody"></div>
             <div class="px-3 pb-3">
                 <input type="file" id="mFile" class="form-control mb-3" accept="image/*">
-                <button class="btn btn-success w-100 py-3 fw-bold rounded-4" onclick="saveData()">حفظ العملية</button>
+                <button class="btn btn-success w-100 py-3 fw-bold rounded-4" onclick="saveData()">حفظ وإتمام العملية</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="farmsModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="stockModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered mx-3">
         <div class="modal-content">
-            <div class="modal-header"><h5 class="fw-bold">اختيار المزرعة</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header"><h5 class="fw-bold">🏠 إدارة المخزن</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
-                <div id="farmsList" class="list-group mb-3"></div>
-                <button class="btn btn-outline-success w-100" onclick="addNewFarmPrompt()">+ إضافة مزرعة جديدة</button>
+                <h6>إضافة صنف جديد/كمية:</h6>
+                <div class="input-group mb-3">
+                    <input type="text" id="sName" class="form-control" placeholder="اسم السماد/المادة">
+                    <input type="number" id="sQty" class="form-control" placeholder="الكمية">
+                    <button class="btn btn-primary" onclick="addToStock()">إضافة</button>
+                </div>
+                <hr>
+                <h6>الكميات المتبقية حالياً:</h6>
+                <div id="stockDetailsList" class="list-group"></div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="bottom-nav">
+<div class="bottom-nav shadow">
     <button class="btn text-success" onclick="location.reload()"><i class="fas fa-home fs-4"></i></button>
-    <button class="btn text-secondary" onclick="openFarms()"><i class="fas fa-layer-group fs-4"></i></button>
-    <button class="btn text-secondary" onclick="openInput('مخزن')"><i class="fas fa-warehouse fs-4"></i></button>
-    <button class="btn text-secondary" onclick="downloadReport()"><i class="fas fa-file-export fs-4"></i></button>
+    <button class="btn text-secondary" onclick="showStock()"><i class="fas fa-warehouse fs-4"></i></button>
+    <button class="btn text-secondary" onclick="downloadReport()"><i class="fas fa-file-pdf fs-4"></i></button>
+    <button class="btn text-secondary" onclick="resetData()"><i class="fas fa-redo-alt fs-4"></i></button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    let db = JSON.parse(localStorage.getItem('farm_v9_db')) || {
+    let db = JSON.parse(localStorage.getItem('farm_v10_db')) || {
         cur: 'f1',
-        farms: { 'f1': { name: "المزرعة الرئيسية", logs: [], kg: 0, stock: [] } }
+        farms: { 'f1': { name: "مزرعة الزيتون", logs: [], kg: 0, stock: {}, lat: null, lon: null } }
     };
     const mModal = new bootstrap.Modal(document.getElementById('mainModal'));
-    const fModal = new bootstrap.Modal(document.getElementById('farmsModal'));
+    const sModal = new bootstrap.Modal(document.getElementById('stockModal'));
     let curType = '';
 
     function openInput(type) {
         curType = type; document.getElementById('mLabel').innerText = "تسجيل: " + type;
         const body = document.getElementById('mBody'); body.innerHTML = '';
-        if(type === 'حصاد') body.innerHTML = `<input type="number" id="v1" class="form-control" placeholder="الكمية (كجم)">`;
-        else if(type === 'عمالة') body.innerHTML = `<input type="text" id="v1" class="form-control mb-2" placeholder="اسم العامل"><select id="v2" class="form-select"><option>حضور ✅</option><option>إجازة 🏖️</option><option>غياب ❌</option></select>`;
-        else if(type === 'مخزن') body.innerHTML = `<input type="text" id="v1" class="form-control mb-2" placeholder="اسم المادة/السماد"><input type="number" id="v2" class="form-control" placeholder="الكمية المضافة">`;
-        else body.innerHTML = `<textarea id="v1" class="form-control" rows="3" placeholder="تفاصيل العملية..."></textarea>`;
+        const f = db.farms[db.cur];
+
+        if(type === 'تسميد') {
+            let options = Object.keys(f.stock).map(k => `<option value="${k}">${k} (متاح: ${f.stock[k]})</option>`).join('');
+            body.innerHTML = `
+                <label class="small fw-bold">اختر السماد من المخزن:</label>
+                <select id="vSelect" class="form-select mb-2">${options || '<option>لا يوجد أصناف في المخزن</option>'}</select>
+                <input type="number" id="vQty" class="form-control" placeholder="الكمية المراد استخدامها">`;
+        } else if(type === 'حصاد') {
+            body.innerHTML = `<input type="number" id="v1" class="form-control" placeholder="الكمية المقطوفة (كجم)">`;
+        } else if(type === 'عمالة') {
+            body.innerHTML = `<input type="text" id="v1" class="form-control mb-2" placeholder="اسم العامل"><select id="v2" class="form-select"><option>حضور ✅</option><option>إجازة 🏖️</option></select>`;
+        } else {
+            body.innerHTML = `<textarea id="v1" class="form-control" rows="3" placeholder="تفاصيل العملية..."></textarea>`;
+        }
         mModal.show();
     }
 
     function saveData() {
         const f = db.farms[db.cur];
-        let msg = document.getElementById('v1').value;
-        if(curType === 'حصاد') f.kg += parseFloat(msg || 0);
-        if(curType === 'عمالة') msg += " (" + document.getElementById('v2').value + ")";
-        if(curType === 'مخزن') { f.stock.push({n: msg, q: document.getElementById('v2').value}); msg = "إضافة للمخزن: " + msg; }
+        let msg = "";
+        
+        if(curType === 'تسميد') {
+            const item = document.getElementById('vSelect').value;
+            const qty = parseFloat(document.getElementById('vQty').value || 0);
+            if(f.stock[item] >= qty) {
+                f.stock[item] -= qty;
+                msg = `تسميد بـ ${item} تم خصم ${qty} كجم (المتبقي: ${f.stock[item]})`;
+            } else { alert("عذراً، الكمية في المخزن لا تكفي!"); return; }
+        } else if(curType === 'حصاد') {
+            const val = parseFloat(document.getElementById('v1').value || 0);
+            f.kg += val; msg = `حصاد كمية ${val} كجم`;
+        } else if(curType === 'عمالة') {
+            msg = document.getElementById('v1').value + " (" + document.getElementById('v2').value + ")";
+        } else { msg = document.getElementById('v1').value; }
 
         const log = { d: new Date().toLocaleString('ar-EG'), t: curType, m: msg, img: null };
         const file = document.getElementById('mFile').files[0];
         if(file) {
             const reader = new FileReader();
-            reader.onload = e => { log.img = e.target.result; finishSave(f, log); };
+            reader.onload = e => { log.img = e.target.result; finish(f, log); };
             reader.readAsDataURL(file);
-        } else finishSave(f, log);
+        } else finish(f, log);
     }
 
-    function finishSave(f, log) { f.logs.push(log); sync(); mModal.hide(); render(); }
+    function finish(f, log) { f.logs.push(log); sync(); mModal.hide(); render(); }
 
-    function openFarms() {
-        document.getElementById('farmsList').innerHTML = Object.keys(db.farms).map(id => `
-            <button class="list-group-item list-group-item-action ${id==db.cur?'active':''}" onclick="selectFarm('${id}')">${db.farms[id].name}</button>
-        `).join('');
-        fModal.show();
+    function showStock() {
+        const f = db.farms[db.cur];
+        document.getElementById('stockDetailsList').innerHTML = Object.keys(f.stock).map(k => `
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                ${k} <span class="badge bg-success rounded-pill">${f.stock[k]} وحدة</span>
+            </div>
+        `).join('') || "المخزن فارغ حالياً";
+        sModal.show();
     }
 
-    function selectFarm(id) { db.cur = id; fModal.hide(); sync(); render(); }
+    function addToStock() {
+        const name = document.getElementById('sName').value;
+        const qty = parseFloat(document.getElementById('sQty').value || 0);
+        if(name) {
+            const f = db.farms[db.cur];
+            f.stock[name] = (f.stock[name] || 0) + qty;
+            sync(); showStock(); render();
+            document.getElementById('sName').value = ''; document.getElementById('sQty').value = '';
+        }
+    }
 
-    function addNewFarmPrompt() {
-        const name = prompt("اسم المزرعة:");
-        if(name) { const id = 'f'+Date.now(); db.farms[id] = { name: name, logs: [], kg: 0, stock: [] }; db.cur = id; sync(); fModal.hide(); render(); }
+    function openMap() {
+        if(db.farms[db.cur].lat) {
+            window.open(`https://www.google.com/maps?q=${db.farms[db.cur].lat},${db.farms[db.cur].lon}`);
+        } else { alert("جاري تحديد الموقع، يرجى تفعيل GPS"); }
     }
 
     function render() {
         const f = db.farms[db.cur];
         document.getElementById('farmTitle').innerText = f.name;
         document.getElementById('viewKg').innerText = f.kg;
-        document.getElementById('viewStock').innerText = f.stock.length;
+        document.getElementById('viewStockCount').innerText = Object.keys(f.stock).length;
         document.getElementById('logList').innerHTML = f.logs.map(l => `
             <div class="card-custom d-flex gap-3 align-items-center">
-                ${l.img ? `<img src="${l.img}" class="log-img" onclick="window.open(this.src)">` : '<div class="log-img bg-light text-center pt-3">🌳</div>'}
-                <div><div class="fw-bold small text-success">${l.t}</div><div class="small">${l.m}</div><div style="font-size:10px" class="text-muted">${l.d}</div></div>
+                ${l.img ? `<img src="${l.img}" style="width:50px;height:50px;border-radius:10px;object-fit:cover">` : '<div style="width:50px;height:50px;background:#f0f0f0;border-radius:10px;text-align:center;padding-top:12px">🌱</div>'}
+                <div class="flex-grow-1"><div class="fw-bold small text-success">${l.t}</div><div class="small">${l.m}</div><div style="font-size:9px" class="text-muted">${l.d}</div></div>
             </div>
         `).reverse().join('');
     }
 
+    function sync() { localStorage.setItem('farm_v10_db', JSON.stringify(db)); }
+    function resetData() { if(confirm("هل تريد مسح سجلات المزرعة الحالية؟")) { db.farms[db.cur].logs = []; sync(); render(); } }
+    
     function downloadReport() {
-        const f = db.farms[db.cur];
-        let t = `تقرير: ${f.name}\n` + f.logs.map(l => `${l.d}: ${l.t} - ${l.m}`).join('\n');
+        let t = `تقرير المزرعة\n` + db.farms[db.cur].logs.map(l => `${l.d}: ${l.t} - ${l.m}`).join('\n');
         const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([t])); a.download = 'Report.txt'; a.click();
     }
 
-    function sync() { localStorage.setItem('farm_v9_db', JSON.stringify(db)); }
-    
     navigator.geolocation.getCurrentPosition(p => {
+        db.farms[db.cur].lat = p.coords.latitude;
+        db.farms[db.cur].lon = p.coords.longitude;
         fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.coords.latitude}&longitude=${p.coords.longitude}&current_weather=true`)
-        .then(r => r.json()).then(d => document.getElementById('weatherText').innerHTML = `<i class="fas fa-thermometer-half"></i> حرارة الموقع: ${d.current_weather.temperature}°C`);
+        .then(r => r.json()).then(d => document.getElementById('weatherText').innerHTML = `📍 موقعك مسجل | الحرارة: ${d.current_weather.temperature}°C`);
     });
 
     render();
