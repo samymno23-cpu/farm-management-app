@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olive Farm Pro V14</title>
+    <title>Olive Farm Pro V16 - الشهري</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main: #2d5a27; --accent: #d4a017; }
+        :root { --main: #2d5a27; }
         body { 
-            background: url('https://images.unsplash.com/photo-1500382017468-9049fee74a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed; 
+            background: url('https://images.unsplash.com/photo-1500382017468-9049fee74a62?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed; 
             background-size: cover; font-family: 'Segoe UI', sans-serif; padding-bottom: 90px;
         }
         .overlay { background: rgba(248, 253, 248, 0.96); min-height: 100vh; }
         .top-bar { background: linear-gradient(135deg, var(--main), #1b3a18); color: white; padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .btn-action { border: none; border-radius: 18px; padding: 15px 5px; color: white; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .bottom-nav { background: white; padding: 10px; position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; border-top: 1px solid #ddd; z-index: 1000; }
-        .card-custom { background: white; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding: 15px; margin-bottom: 15px; }
-        .log-img { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; }
+        .card-custom { background: white; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding: 15px; margin-bottom: 15px; border: none; }
+        .month-header { background: #e8f5e9; padding: 10px; border-radius: 10px; margin-bottom: 15px; font-weight: bold; text-align: center; color: var(--main); }
     </style>
 </head>
 <body>
@@ -25,15 +25,15 @@
     <div class="top-bar text-center">
         <div class="d-flex justify-content-center align-items-center gap-2">
             <h4 id="farmTitle" class="fw-bold mb-0">مزرعة الزيتون</h4>
-            <button class="btn btn-sm btn-light rounded-circle" onclick="openMap()">📍</button>
+            <button class="btn btn-sm btn-light rounded-circle" onclick="location.reload()">🔄</button>
         </div>
-        <div id="weatherDisplay" class="small mt-1 text-white-50">جاري تحديد الموقع والطقس...</div>
+        <div id="weatherInfo" class="small mt-1 text-white-50">جاري جلب البيانات...</div>
     </div>
 
-    <div class="container mt-4 px-3">
-        <div class="row g-2 mb-4 text-center">
-            <div class="col-6"><div class="card-custom border-bottom border-success border-4"><small>إجمالي المحصول</small><h4 id="viewKg" class="mb-0 fw-bold">0</h4></div></div>
-            <div class="col-6"><div class="card-custom border-bottom border-primary border-4"><small>أصناف المخزن</small><h4 id="viewStock" class="mb-0 fw-bold">0</h4></div></div>
+    <div class="container mt-4 px-3 text-center">
+        <div class="row g-2 mb-4">
+            <div class="col-6"><div class="card-custom border-bottom border-success border-4"><small class="text-muted">المحصول</small><h4 id="kgTotal" class="mb-0 fw-bold">0</h4></div></div>
+            <div class="col-6"><div class="card-custom border-bottom border-primary border-4"><small class="text-muted">المخزن</small><h4 id="stockCount" class="mb-0 fw-bold">0</h4></div></div>
         </div>
 
         <div class="row g-2 mb-3">
@@ -41,24 +41,11 @@
             <div class="col-4"><button class="btn-action w-100" style="background:#f39c12" onclick="openInput('تسميد')"><i class="fas fa-flask fs-4"></i> تسميد</button></div>
             <div class="col-4"><button class="btn-action w-100" style="background:#3498db" onclick="openInput('رش')"><i class="fas fa-wind fs-4"></i> رش</button></div>
             <div class="col-4"><button class="btn-action w-100" style="background:#e67e22" onclick="openInput('تقليم')"><i class="fas fa-cut fs-4"></i> تقليم</button></div>
-            <div class="col-4"><button class="btn-action w-100" style="background:#2980b9" onclick="openInput('خدمة شتوية')"><i class="fas fa-snowflake fs-4"></i> خدمة شتوية</button></div>
+            <div class="col-4"><button class="btn-action w-100" style="background:#2980b9" onclick="openInput('خدمة شتوية')"><i class="fas fa-snowflake fs-4"></i> شتوية</button></div>
             <div class="col-4"><button class="btn-action w-100" style="background:#e74c3c" onclick="openInput('أعطال')"><i class="fas fa-tools fs-4"></i> أعطال</button></div>
             <div class="col-4"><button class="btn-action w-100" style="background:#2c3e50" onclick="openInput('حصاد')"><i class="fas fa-box-open fs-4"></i> حصاد</button></div>
-            <div class="col-4"><button class="btn-action w-100" style="background:#8e44ad" onclick="openStaffBoard()"><i class="fas fa-users-cog fs-4"></i> كشف عمالة</button></div>
-            <div class="col-4"><button class="btn-action w-100" style="background:#16a085" onclick="downloadReport()"><i class="fas fa-file-invoice fs-4"></i> تقرير</button></div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="mainModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered mx-3">
-        <div class="modal-content shadow border-0" style="border-radius:25px;">
-            <div class="modal-header border-0 pb-0"><h5 id="mLabel" class="fw-bold"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body" id="mBody"></div>
-            <div class="px-3 pb-3">
-                <input type="file" id="mFile" class="form-control mb-3" accept="image/*">
-                <button class="btn btn-success w-100 py-3 fw-bold rounded-4" onclick="saveData()">حفظ العملية</button>
-            </div>
+            <div class="col-4"><button class="btn-action w-100" style="background:#8e44ad" onclick="openStaffModal()"><i class="fas fa-calendar-check fs-4"></i> كشف شهري</button></div>
+            <div class="col-4"><button class="btn-action w-100" style="background:#16a085" onclick="downloadFullReport()"><i class="fas fa-file-export fs-4"></i> تقرير</button></div>
         </div>
     </div>
 </div>
@@ -66,17 +53,52 @@
 <div class="modal fade" id="staffModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-sm-down">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white"><h5 class="fw-bold">👥 كشف حضور العمالة</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header bg-dark text-white">
+                <h5 class="fw-bold mb-0">🗓️ كشف العمالة الشهري</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
             <div class="modal-body">
-                <div class="input-group mb-3">
-                    <input type="text" id="stName" class="form-control" placeholder="اسم العامل">
-                    <select id="stType" class="form-select w-25"><option>حضور</option><option>إجازة</option><option>غياب</option></select>
-                    <button class="btn btn-primary" onclick="addStaffRow()">تسجيل</button>
+                <div class="month-header" id="currentMonthName">شهر: يناير 2026</div>
+                
+                <div class="card p-3 mb-3 border-0 bg-light shadow-sm">
+                    <h6>تسجيل يومية جديد:</h6>
+                    <div class="input-group">
+                        <input type="text" id="workerName" class="form-control" placeholder="اسم العامل">
+                        <select id="workerStatus" class="form-select w-25">
+                            <option value="حضور">حضور ✅</option>
+                            <option value="إجازة">إجازة 🏖️</option>
+                            <option value="غياب">غياب ❌</option>
+                        </select>
+                        <button class="btn btn-success" onclick="recordWorkerDay()">حفظ</button>
+                    </div>
                 </div>
-                <table class="table table-sm table-bordered text-center small">
-                    <thead class="table-light"><tr><th>العامل</th><th>حضور</th><th>إجازة</th><th>غياب</th></tr></thead>
-                    <tbody id="stTable"></tbody>
-                </table>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center align-middle small shadow-sm">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>اسم العامل</th>
+                                <th class="text-success">حضور</th>
+                                <th class="text-primary">إجازة</th>
+                                <th class="text-danger">غياب</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staffTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mainModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mx-3">
+        <div class="modal-content border-0 shadow-lg" style="border-radius:25px;">
+            <div class="modal-header border-0"><h5 id="modalLabel" class="fw-bold"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="px-3 pb-3">
+                <input type="file" id="imageInput" class="form-control mb-3" accept="image/*">
+                <button class="btn btn-success w-100 py-3 fw-bold rounded-4 shadow" onclick="saveOp()">إتمام العملية</button>
             </div>
         </div>
     </div>
@@ -85,12 +107,12 @@
 <div class="modal fade" id="farmsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered mx-3">
         <div class="modal-content" style="border-radius:20px;">
-            <div class="modal-header"><h5 class="fw-bold">تبديل / إضافة مزرعة</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <div id="fList" class="list-group mb-3"></div>
+            <div class="modal-header border-0"><h5 class="fw-bold">تبديل المزرعة</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body pt-0">
+                <div id="farmListView" class="list-group mb-3"></div>
                 <div class="input-group">
-                    <input type="text" id="fNewName" class="form-control" placeholder="اسم مزرعة جديدة">
-                    <button class="btn btn-success" onclick="addNewFarm()">إضافة</button>
+                    <input type="text" id="newFarmInput" class="form-control" placeholder="اسم المزرعة الجديدة">
+                    <button class="btn btn-success" onclick="addFarmNow()">إضافة</button>
                 </div>
             </div>
         </div>
@@ -99,110 +121,118 @@
 
 <div class="bottom-nav">
     <button class="btn text-success" onclick="location.reload()"><i class="fas fa-home fs-4"></i></button>
-    <button class="btn text-secondary" onclick="openFarms()"><i class="fas fa-layer-group fs-4"></i></button>
+    <button class="btn text-secondary" onclick="openFarmsView()"><i class="fas fa-layer-group fs-4"></i></button>
     <button class="btn text-secondary" onclick="openInput('مخزن')"><i class="fas fa-warehouse fs-4"></i></button>
-    <button class="btn text-secondary" onclick="openArchive()"><i class="fas fa-history fs-4"></i></button>
+    <button class="btn text-secondary" onclick="openArchiveView()"><i class="fas fa-history fs-4"></i></button>
     <button class="btn text-secondary" onclick="openInput('تذكير')"><i class="fas fa-bell fs-4"></i></button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    let db = JSON.parse(localStorage.getItem('farm_v14_final')) || {
-        cur: 'f1', farms: { 'f1': { name: "المزرعة الرئيسية", logs: [], kg: 0, stock: {}, staff: {}, lat: null, lon: null } }
+    let db = JSON.parse(localStorage.getItem('farm_v16_monthly')) || {
+        cur: 'f1', farms: { 'f1': { name: "المزرعة الرئيسية", logs: [], kg: 0, stock: {}, staffLogs: [] } }
     };
-    const mModal = new bootstrap.Modal(document.getElementById('mainModal'));
-    const sModal = new bootstrap.Modal(document.getElementById('staffModal'));
-    const fModal = new bootstrap.Modal(document.getElementById('farmsModal'));
-    let curType = '';
+    const mainMod = new bootstrap.Modal(document.getElementById('mainModal'));
+    const staffMod = new bootstrap.Modal(document.getElementById('staffModal'));
+    const farmMod = new bootstrap.Modal(document.getElementById('farmsModal'));
+    let activeType = '';
 
     function openInput(type) {
-        curType = type; document.getElementById('mLabel').innerText = "تسجيل: " + type;
-        const body = document.getElementById('mBody'); body.innerHTML = '';
+        activeType = type; document.getElementById('modalLabel').innerText = "تسجيل: " + type;
+        const body = document.getElementById('modalBody'); body.innerHTML = '';
         const f = db.farms[db.cur];
-        document.getElementById('mFile').value = ""; // تنظيف حقل الصورة فوراً
 
         if(type === 'تسميد') {
             let opts = Object.keys(f.stock).map(k => `<option value="${k}">${k} (${f.stock[k]})</option>`).join('');
             body.innerHTML = `<select id="vS" class="form-select mb-2">${opts || '<option>المخزن فارغ</option>'}</select><input type="number" id="vQ" class="form-control" placeholder="الكمية">`;
         } else if(type === 'مخزن') {
-            body.innerHTML = `<input type="text" id="v1" class="form-control mb-2" placeholder="اسم المادة"><input type="number" id="v2" class="form-control" placeholder="الكمية">`;
+            body.innerHTML = `<input type="text" id="v1" class="form-control mb-2" placeholder="اسم المادة"><input type="number" id="v2" class="form-control" placeholder="الكمية المضافة">`;
         } else if(type === 'حصاد') {
             body.innerHTML = `<input type="number" id="v1" class="form-control" placeholder="كجم">`;
         } else {
             body.innerHTML = `<textarea id="v1" class="form-control" rows="3" placeholder="تفاصيل..."></textarea>`;
         }
-        mModal.show();
+        mainMod.show();
     }
 
-    function saveData() {
+    function saveOp() {
         const f = db.farms[db.cur]; let msg = "";
-        if(curType === 'تسميد') {
+        if(activeType === 'تسميد') {
             let i = document.getElementById('vS').value, q = parseFloat(document.getElementById('vQ').value || 0);
             if(f.stock[i] >= q) { f.stock[i] -= q; msg = `تسميد بـ ${i} (${q})`; } else { alert("لا تكفي!"); return; }
-        } else if(curType === 'مخزن') {
+        } else if(activeType === 'مخزن') {
             let n = document.getElementById('v1').value, q = parseFloat(document.getElementById('v2').value || 0);
             f.stock[n] = (f.stock[n] || 0) + q; msg = `مخزن: ${n} (+${q})`;
-        } else if(curType === 'حصاد') {
+        } else if(activeType === 'حصاد') {
             let q = parseFloat(document.getElementById('v1').value || 0); f.kg += q; msg = `حصاد ${q} كجم`;
         } else { msg = document.getElementById('v1').value; }
 
-        const log = { d: new Date().toLocaleString('ar-EG'), t: curType, m: msg, img: null };
-        const file = document.getElementById('mFile').files[0];
-        if(file) {
-            const r = new FileReader(); r.onload = e => { log.img = e.target.result; finish(f, log); }; r.readAsDataURL(file);
-        } else finish(f, log);
+        const log = { d: new Date().toLocaleDateString('ar-EG'), t: activeType, m: msg };
+        f.logs.push(log); save(); mainMod.hide(); render();
     }
 
-    function finish(f, log) { f.logs.push(log); sync(); mModal.hide(); render(); }
-
-    function openStaffBoard() {
-        renderStaff(); sModal.show();
+    function openStaffModal() {
+        const d = new Date();
+        document.getElementById('currentMonthName').innerText = `كشف شهر: ${d.toLocaleString('ar-EG', { month: 'long', year: 'numeric' })}`;
+        renderStaffTable();
+        staffMod.show();
     }
 
-    function addStaffRow() {
-        let n = document.getElementById('stName').value, t = document.getElementById('stType').value, f = db.farms[db.cur];
+    function recordWorkerDay() {
+        const n = document.getElementById('workerName').value, s = document.getElementById('workerStatus').value, f = db.farms[db.cur];
         if(!n) return;
-        if(!f.staff[n]) f.staff[n] = { حضور:0, إجازة:0, غياب:0 };
-        f.staff[n][t]++; sync(); renderStaff();
-        document.getElementById('stName').value = "";
+        const log = { name: n, status: s, date: new Date().toISOString() };
+        if(!f.staffLogs) f.staffLogs = [];
+        f.staffLogs.push(log);
+        save(); renderStaffTable();
+        document.getElementById('workerName').value = "";
     }
 
-    function renderStaff() {
-        let f = db.farms[db.cur], h = "";
-        for(let n in f.staff) h += `<tr><td>${n}</td><td>${f.staff[n].حضور}</td><td>${f.staff[n].إجازة}</td><td>${f.staff[n].غياب}</td></tr>`;
-        document.getElementById('stTable').innerHTML = h;
+    function renderStaffTable() {
+        const f = db.farms[db.cur];
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        
+        let report = {};
+        (f.staffLogs || []).forEach(entry => {
+            const entryDate = new Date(entry.date);
+            if(entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
+                if(!report[entry.name]) report[entry.name] = { حضور:0, إجازة:0, غياب:0 };
+                report[entry.name][entry.status]++;
+            }
+        });
+
+        let html = "";
+        for(let name in report) {
+            html += `<tr><td class="fw-bold text-dark">${name}</td><td class="text-success fw-bold">${report[name].حضور}</td><td>${report[name].إجازة}</td><td class="text-danger">${report[name].غياب}</td></tr>`;
+        }
+        document.getElementById('staffTableBody').innerHTML = html || '<tr><td colspan="4">لا توجد بيانات لهذا الشهر</td></tr>';
     }
 
-    function openFarms() {
-        document.getElementById('fList').innerHTML = Object.keys(db.farms).map(id => `
-            <button class="list-group-item list-group-item-action ${id==db.cur?'active':''}" onclick="selectF('${id}')">${db.farms[id].name}</button>
+    function openFarmsView() {
+        document.getElementById('farmListView').innerHTML = Object.keys(db.farms).map(id => `
+            <button class="list-group-item list-group-item-action ${id==db.cur?'active':''}" onclick="selectFarm('${id}')">${db.farms[id].name}</button>
         `).join('');
-        fModal.show();
+        farmMod.show();
     }
-    function selectF(id) { db.cur = id; sync(); fModal.hide(); render(); }
-    function addNewFarm() {
-        let n = document.getElementById('fNewName').value;
-        if(n) { let id = 'f'+Date.now(); db.farms[id] = { name: n, logs: [], kg: 0, stock: {}, staff: {} }; db.cur = id; sync(); fModal.hide(); render(); }
+    function selectFarm(id) { db.cur = id; save(); farmMod.hide(); render(); }
+    function addFarmNow() {
+        let n = document.getElementById('newFarmInput').value;
+        if(n) { let id = 'f'+Date.now(); db.farms[id] = { name: n, logs: [], kg: 0, stock: {}, staffLogs: [] }; db.cur = id; save(); farmMod.hide(); render(); }
     }
 
     function render() {
         const f = db.farms[db.cur]; document.getElementById('farmTitle').innerText = f.name;
-        document.getElementById('viewKg').innerText = f.kg;
-        document.getElementById('viewStock').innerText = Object.keys(f.stock).length;
+        document.getElementById('kgTotal').innerText = f.kg;
+        document.getElementById('stockCount').innerText = Object.keys(f.stock).length;
     }
 
-    function sync() { localStorage.setItem('farm_v14_final', JSON.stringify(db)); }
-    function downloadReport() {
+    function save() { localStorage.setItem('farm_v16_monthly', JSON.stringify(db)); }
+    function downloadFullReport() {
         let t = db.farms[db.cur].logs.map(l => `${l.d}: ${l.t} - ${l.m}`).join('\n');
-        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([t])); a.download = 'Report.txt'; a.click();
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([t])); a.download = 'تقرير_المزرعة.txt'; a.click();
     }
-
-    navigator.geolocation.getCurrentPosition(p => {
-        db.farms[db.cur].lat = p.coords.latitude; db.farms[db.cur].lon = p.coords.longitude;
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.coords.latitude}&longitude=${p.coords.longitude}&current_weather=true`)
-        .then(r => r.json()).then(d => document.getElementById('weatherDisplay').innerHTML = `📍 الموقع مسجل | الحرارة الآن: ${d.current_weather.temperature}°C`);
-    });
-
+    
     render();
 </script>
 </body>
